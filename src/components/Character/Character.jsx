@@ -1,6 +1,6 @@
-import './Item.scss';
+import './Character.scss';
 
-export const Item = ({ img, name }) => {
+export const Character = ({ img, name }) => {
     return (
         <div className='item'>
             <img src={img} />

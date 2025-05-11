@@ -1,4 +1,4 @@
-import { SET_SEARCH_FIELD } from "./constants";
+import { REQUEST_CHARACTERS_FAILED, REQUEST_CHARACTERS_PENDING, REQUEST_CHARACTERS_SUCCESS, SET_SEARCH_FIELD } from "./constants";
 
 const initialStateSearch = {
     searchField: ''
@@ -20,12 +20,11 @@ const initialStateCharacters = {
 
 export const requestCharacters = (state = initialStateCharacters, action = {}) => {
     switch (action.type) {
-        case REQUEST_ROBOTS_PENDING:
+        case REQUEST_CHARACTERS_PENDING:
             return { ...state, isPending: true }
-            return Object.assign({}, state, { isPending: true })
-        case REQUEST_ROBOTS_SUCCESS:
+        case REQUEST_CHARACTERS_SUCCESS:
             return { ...state, characters: action.paylod, isPending: false }
-        case REQUEST_ROBOTS_FAILED:
+        case REQUEST_CHARACTERS_FAILED:
             return { ...state, error: action.payload }
         default:
             return state

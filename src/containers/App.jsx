@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setSearchField } from '../actions';
-import { Item } from '../components/Item/Item';
+import { setRequestCharacters, setSearchField } from '../actions';
+import { CharacterList } from '../components/CharacterList/CharacterList';
 import { SearchField } from '../components/SearchField/SearchField.JSX';
-import './App.css';
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
-const mapStateToProps = () => {
+const mapStateToProps = (state) => {
   return {
     searchField: state.searchCharacters.searchField,
     characters: state.requestCharacters.characters,
@@ -16,44 +16,35 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onTextChange: (event) => dispatch(setSearchField(event.target.value)),
-    onRequestRobots: () => dispatch(requestRobots())
+    onRequestCharacters: () => dispatch(setRequestCharacters())
   }
 }
 
-const App = () => {
+class App extends Component {
 
-  useEffect(() => {
-    this.props.onRequestRobots();
-  }, []);
+  componentDidMount() {
+    this.props.onRequestCharacters();
+  }
 
-  const { characters, searchField, onTextChange, isPending } = this.props;
-
-  const filteredCharacters = characters.filter(robot => {
-    const result = characters?.filter(c => c.name.toLowerCase().includes(searchField.toLowerCase()));
-    return robot.name.toLowerCase().includes(searchField.toLowerCase());
-  })
-
-  return (
-    <>
-      {
-        isPending ?
-          <p>Loading...</p> :
-          <>
-            <SearchField onTextChange={onTextChange} />
-            <div className='items'>
-              {
-                filteredCharacters?.map((character, i) => {
-                  return (
-                    <Item key={i} name={character.name} img={character.image} />
-                  )
-                })
-              }
-              {!characters.length && <p>No results found</p>}
-            </div>
-          </>
-      }
-    </>
-  )
+  render() {
+    const { characters, searchField, onTextChange, isPending } = this.props;
+    const filteredCharacters = characters?.filter(c => c.name.toLowerCase().includes(searchField.toLowerCase()));
+    return (
+      <>
+        {
+          isPending ?
+            <p>Loading...</p> :
+            <>
+              <SearchField onTextChange={onTextChange} />
+              <ErrorBoundary>
+                <CharacterList filteredCharacters={filteredCharacters} />
+                {!characters.length && <p>No results found</p>}
+              </ErrorBoundary>
+            </>
+        }
+      </>
+    )
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
